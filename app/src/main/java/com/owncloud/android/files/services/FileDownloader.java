@@ -314,20 +314,15 @@ public class FileDownloader extends Service
 
         /**
          * Cancels all the downloads for an account
-         *
-         * @param account   ownCloud account.
          */
-        public void cancel(Account account) {
-            Log_OC.d(TAG, "Account= " + account.name);
-
+        public void cancel(String accountName) {
             if (mCurrentDownload != null) {
-                Log_OC.d(TAG, "Current Download Account= " + mCurrentDownload.getAccount().name);
-                if (mCurrentDownload.getAccount().name.equals(account.name)) {
+                if (mCurrentDownload.getUser().nameEquals(accountName)) {
                     mCurrentDownload.cancel();
                 }
             }
             // Cancel pending downloads
-            cancelDownloadsForAccount(account);
+            cancelPendingDownloads(accountName);
         }
 
         public void clearListeners() {
@@ -491,15 +486,10 @@ public class FileDownloader extends Service
 
                     /// notify result
                     notifyDownloadResult(mCurrentDownload, downloadResult);
-
                     sendBroadcastDownloadFinished(mCurrentDownload, downloadResult, removeResult.second);
                 }
-
             } else {
-                // Cancel the transfer
-                Log_OC.d(TAG, "Account " + mCurrentDownload.getAccount() + " doesn't exist");
-                cancelDownloadsForAccount(mCurrentDownload.getAccount());
-
+                cancelPendingDownloads(mCurrentDownload.getUser().getAccountName());
             }
         }
     }
@@ -741,13 +731,7 @@ public class FileDownloader extends Service
         localBroadcastManager.sendBroadcast(added);
     }
 
-    /**
-     * Remove downloads of an account
-     *
-     * @param account       Downloads account to remove
-     */
-    private void cancelDownloadsForAccount(Account account) {
-        // Cancel pending downloads
-        mPendingDownloads.remove(account.name);
+    private void cancelPendingDownloads(String accountName) {
+        mPendingDownloads.remove(accountName);
     }
 }
