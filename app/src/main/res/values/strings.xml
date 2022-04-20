@@ -1012,4 +1012,6 @@
     <string name="lock_file">Lock</string>
     <string name="unlock_file">Unlock</string>
     <string name="error_file_lock">Error changing file lock status</string>
+    <string name="file_lock_dialog_title">Lock details</string>
+    <string name="locked_by">Locked by %1$s</string>
 </resources>
